@@ -14,8 +14,6 @@ int tiempo;
 int i;
 int j;
 int tiempo_borrado;
-//WIEGAND wg1918;
-//int miArray[] = {valor0, valor1, valor2…}
 unsigned long miArray[10];// = {};  declaracion de variables globales 
 unsigned long currentKey;
 unsigned long numeros_de_bit;
@@ -24,23 +22,25 @@ WiegandNG wg;
 
 void setup() {
   contador = 0;
- // pinMode(led,OUTPUT);
-  //digitalWrite(led,LOW);
 
   Serial.begin(9600);  
  
 //  wg.begin(18, 19);
 //  wg.begin(20, 21);
 
-  unsigned int pinD0 = 2;
-  unsigned int pinD1 = 3;
+ // unsigned int pinD0 = 2;
+  //unsigned int pinD1 = 3;
+  
   unsigned int wiegandbits = 48;
   unsigned int packetGap = 15;  
-
+  
+  wg.begin(18, 19, wiegandbits, packetGap);
+  wg.begin(20, 21, wiegandbits, packetGap);
+/*
   if(!wg.begin(pinD0, pinD1, wiegandbits, packetGap)) {
     Serial.println("Out of memory!");
   }
-  
+  */
   setTime(0,0,0,0,1,2019); // seteo de hora y fecha
 
   pinMode(18, INPUT); //Dato 0 D0 Lector 1
@@ -53,14 +53,7 @@ void setup() {
   pinMode(21, INPUT);// Dato 1 D1 Lector 1
   digitalWrite(21, HIGH);  // Habilitar resistencia pull-up
  
-//intento de creacion lector 2//
 
-  // default Wiegand Pin 2 and Pin 3 see image on README.md
-  // for non UNO board, use wg.begin(pinD0, pinD1) where pinD0 and pinD1 
-  // are the pins connected to D0 and D1 of wiegand reader respectively.
-
-  //Serial.print("tamaño de array: ");
-  //Serial.println(sizeof(miArray)/4);
 
   Serial.print("tamaño de matriz ");
   Serial.println(sizeof(matriz)/4);
