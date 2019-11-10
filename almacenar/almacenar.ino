@@ -17,6 +17,7 @@ int tiempo_borrado;
 unsigned long miArray[10];// = {};  declaracion de variables globales 
 unsigned long currentKey;
 unsigned long numeros_de_bit;
+unsigned long resultado_traspasado;
 
 WiegandNG wg;
 
@@ -62,6 +63,9 @@ void setup() {
 
 
 void PrintBinary(WiegandNG &tempwg) {
+  int n = 0;
+
+  
   volatile unsigned char *buffer=tempwg.getRawData();
   unsigned int bufferSize = tempwg.getBufferSize();
   unsigned int countedBits = tempwg.getBitCounted();
@@ -70,21 +74,78 @@ void PrintBinary(WiegandNG &tempwg) {
   if ((countedBits % 8)>0) countedBytes++;
   // unsigned int bitsUsed = countedBytes * 8;
   
+  int bits = wg.getBitCounted();
+  byte resultado[bits];
+  
+ // for (int i=0; i< bits; i++)  {resultado[i]=0;}
+  
+  //for (int i=0; i< bits; i++)  {Serial.print(resultado[i]);}
+
+  
+  Serial.print("el tamaño de arry es: ");
+   Serial.println(sizeof resultado);
+   
   for (unsigned int i=bufferSize-countedBytes; i< bufferSize;i++) {
+   // unsigned char bufByte=buffer[i];
+//Serial.print(bufByte);
+    //Serial.print(i);
     unsigned char bufByte=buffer[i];
+    //Serial.print(buffer[i]);
     for(int x=0; x<8;x++) {
-      if ( (((bufferSize-i) *8)-x) <= countedBits) {
+      if ( (((bufferSize-i) *8)-x) <= countedBits) {                                
         if((bufByte & 0x80)) {
           Serial.print("1");
+          resultado[n]=1;
+          n++;
         }
         else {
           Serial.print("0");
+          resultado[n]=0;
+          n++;
         }
       }
       bufByte<<=1;
-    }
+    }                                                                               
   }
   Serial.println();
+
+//------------
+for (int j=0; j< bits; j++)  {Serial.print(resultado[j]);}Serial.println();
+//char s[] = "01001011";
+//for (int i=0; i< bits; i++)  {Serial.print(resultado[i]);}
+
+
+//Serial.println(resultado);
+//for (int i=0; i< bits; i++)  {Serial.print(resultado[i]);}
+//------------
+/*
+//char s[] = "01001011";
+int value = 0;
+for (int i=0; i< strlen(resultado); i++)  // for every character in the string  strlen(s) returns the length of a char array
+{
+  value *= 2; // double the result so far
+  if (resultado[i] == 1) value++;  //add 1 if needed
+}
+Serial.println(value);*/
+
+//------------
+
+  unsigned  long decimal = 0;
+  unsigned  long multiplicador = 1;
+  int caracterActual;
+  for (int i = bits - 1; i >= 0; i--) {
+     
+    caracterActual = resultado[i];
+     Serial.println(caracterActual);
+    if (caracterActual == 1) {
+      decimal += multiplicador;
+      Serial.println(decimal);
+    }
+    multiplicador = multiplicador * 2;
+  }
+  Serial.println(decimal);
+for (int j=0; j< bits; j++)  {Serial.print(resultado[j]);}Serial.println();
+//------------
 }
 
 void loop() {
@@ -92,9 +153,13 @@ void loop() {
   if(wg.available()) {
     wg.pause();     // pause Wiegand pin interrupts
     Serial.print("Bits=");
+    // int bits = wg.getBitCounted();
+    int bits = wg.getBitCounted();
+    unsigned char resultado[bits];
     Serial.println(wg.getBitCounted()); // display the number of bits counted
     Serial.print("RAW Binary=");
     PrintBinary(wg); // display raw data in binary form, raw data inclusive of PARITY
+    //Serial.print(wg);
     wg.clear(); // compulsory to call clear() to enable interrupts for subsequent data
   }
 
