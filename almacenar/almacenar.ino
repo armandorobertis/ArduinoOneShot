@@ -16,7 +16,7 @@ int j;
 int tiempo_borrado;
 unsigned long miArray[10];// = {};  declaracion de variables globales 
 unsigned long currentKey;
-unsigned long numeros_de_bit;
+
 unsigned long resultado_traspasado;
 
 WiegandNG wg;
@@ -77,20 +77,14 @@ void PrintBinary(WiegandNG &tempwg) {
   int bits = wg.getBitCounted();
   byte resultado[bits];
   
- // for (int i=0; i< bits; i++)  {resultado[i]=0;}
-  
-  //for (int i=0; i< bits; i++)  {Serial.print(resultado[i]);}
-
   
   Serial.print("el tamaño de arry es: ");
    Serial.println(sizeof resultado);
    
   for (unsigned int i=bufferSize-countedBytes; i< bufferSize;i++) {
-   // unsigned char bufByte=buffer[i];
-//Serial.print(bufByte);
-    //Serial.print(i);
+
     unsigned char bufByte=buffer[i];
-    //Serial.print(buffer[i]);
+
     for(int x=0; x<8;x++) {
       if ( (((bufferSize-i) *8)-x) <= countedBits) {                                
         if((bufByte & 0x80)) {
@@ -109,42 +103,21 @@ void PrintBinary(WiegandNG &tempwg) {
   }
   Serial.println();
 
-//------------
-for (int j=0; j< bits; j++)  {Serial.print(resultado[j]);}Serial.println();
-//char s[] = "01001011";
-//for (int i=0; i< bits; i++)  {Serial.print(resultado[i]);}
-
-
-//Serial.println(resultado);
-//for (int i=0; i< bits; i++)  {Serial.print(resultado[i]);}
-//------------
-/*
-//char s[] = "01001011";
-int value = 0;
-for (int i=0; i< strlen(resultado); i++)  // for every character in the string  strlen(s) returns the length of a char array
-{
-  value *= 2; // double the result so far
-  if (resultado[i] == 1) value++;  //add 1 if needed
-}
-Serial.println(value);*/
-
-//------------
-
-  unsigned  long decimal = 0;
+  unsigned  long currentKey = 0;
   unsigned  long multiplicador = 1;
   int caracterActual;
   for (int i = bits - 1; i >= 0; i--) {
-     
-    caracterActual = resultado[i];
-     Serial.println(caracterActual);
+     caracterActual = resultado[i];
+     //Serial.println(caracterActual);
     if (caracterActual == 1) {
-      decimal += multiplicador;
-      Serial.println(decimal);
+      currentKey += multiplicador;
+     // Serial.println(currentKey);
     }
     multiplicador = multiplicador * 2;
   }
-  Serial.println(decimal);
-for (int j=0; j< bits; j++)  {Serial.print(resultado[j]);}Serial.println();
+  
+  Serial.println(currentKey);
+//for (int j=0; j< bits; j++)  {Serial.print(resultado[j]);}Serial.println();
 //------------
 }
 
@@ -174,17 +147,12 @@ void loop() {
   if(wg.available())
   {
 
-
-    //Serial.print("tamaño de matriz ");
-    //Serial.println(sizeof(matriz)/4);
-
       unsigned long currentKey = wg.getBitCounted();
   //  unsigned long currentKey = wg.getCode();
-   // unsigned long numeros_de_bit = wg.nBit();
+
     //currentKey = wg.getCode();
     Serial.println(currentKey); 
-  Serial.print("numeros de bit contados: ");
-    Serial.println(numeros_de_bit);
+
     tiempo = minute(t);                 // (minutos)minute , (hora)    si se quiere borrar en mas de 59 minutos usar en horas
 
                     
